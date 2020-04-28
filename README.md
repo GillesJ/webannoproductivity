@@ -5,21 +5,23 @@ Check working hours of annotators in WebAnno.
 ## Usage:
 Run example: 
 
-`python3 log2workinghours -u user1, user2 -p 5 -s 2020-04-27 -e 2020-04-28 -d webanno3`
+`python log2workinghours.py -u user1 user2 -s 2020-04-27 -e 2020-04-29 -d webanno364`
 
 Output:
 
 ```
-user1
+USER1
 Worked 1:59:14 on 2020-04-27 (08:27:17-11:56:09).
 Worked 1:31:39 on 2020-04-28 (07:02:00-08:47:51).
-Total time worked from 2020-04-28 to 2020-05-01: 1:31:39
-user2
+Total time worked from 2020-04-27 to 2020-04-29: 4:00:49
+-------
+USER2
 Worked 1:52:33 on 2020-04-27 (08:52:08-11:54:49).
 Worked 1:40:16 on 2020-04-28 (07:06:51-08:47:07).
-Total time worked from 2020-04-28 to 2020-05-01: 1:40:16
-
+Total time worked from 2020-04-27 to 2020-04-29: 4:29:26
+-------
 ```
+
 Command arguments:
 ```
   -h, --help            show this help message and exit

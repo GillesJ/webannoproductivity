@@ -75,7 +75,7 @@ for user, user_entries in groupby(sorted(entries, key=keyfunc), key=keyfunc):
     user_seen.add(user)
     # collect hours worked
     user_dts = []
-    print("-------\n", user)
+    print(user.upper())
     for x in user_entries:
         dt = datetime.datetime.strptime(x["dt"], "%Y-%m-%d %H:%M:%S")
         if dt not in user_dts:
@@ -105,7 +105,7 @@ for user, user_entries in groupby(sorted(entries, key=keyfunc), key=keyfunc):
     print(f"Total time worked from {start_day.strftime('%Y-%m-%d')} to {end_day.strftime('%Y-%m-%d')}: {datetime.timedelta(seconds=total_worked)}")
     print("-------")
 
-    # warn about non-found users
-    for u in annotators:
-        if u not in user_seen:
-            print(f"WARNING: {u} was not found in the logs.")
+# warn about non-found users
+for u in annotators:
+    if u not in user_seen:
+        print(f"WARNING: {u} was not found in the logs.")
