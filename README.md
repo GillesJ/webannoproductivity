@@ -2,11 +2,26 @@
 
 Check working hours of annotators in WebAnno.
 
-## Usage and Settings:
+## Usage:
 Run example: 
-`python3 log2workinghours -u user1, user2 -p 5 -s 2020-01-01 -e 2020-01-06 -d webanno3`
+
+`python3 log2workinghours -u user1, user2 -p 5 -s 2020-04-27 -e 2020-04-28 -d webanno3`
+
+Output:
+
 ```
-command arguments:
+user1
+Worked 1:59:14 on 2020-04-27 (08:27:17-11:56:09).
+Worked 1:31:39 on 2020-04-28 (07:02:00-08:47:51).
+Total time worked from 2020-04-28 to 2020-05-01: 1:31:39
+user2
+Worked 1:52:33 on 2020-04-27 (08:52:08-11:54:49).
+Worked 1:40:16 on 2020-04-28 (07:06:51-08:47:07).
+Total time worked from 2020-04-28 to 2020-05-01: 1:40:16
+
+```
+Command arguments:
+```
   -h, --help            show this help message and exit
   -u USERS [USERS ...], --users USERS [USERS ...]
                         One or multiple name(s) of the WebAnno users whose
@@ -25,6 +40,5 @@ command arguments:
                         Name of the WebAnno docker image for which the logs
                         are retrieved.
 ```
-
 Requirements:
 - Python 3.6+ 
