@@ -4,9 +4,10 @@ import datetime
 import subprocess
 import argparse
 
+# parse args and set vars
 parser = argparse.ArgumentParser(
     prog="log2workinghours",
-    usage="Parses WebAnno log to working hours."
+    usage="Parses WebAnno log to working hours. Example: python3 log2workinghours -u user1, user2 -p 5 -s 2020-01-01 -e 2020-01-06 -d webanno3"
 )
 parser.add_argument(
     "-u",
@@ -32,7 +33,7 @@ parser.add_argument(
     nargs=1,
     type=str,
     default=None,
-    help="Starting day date from which the total working hours are counted."
+    help="Starting day date in format %%Y-%%m-%%d from which the total working hours are counted."
 )
 parser.add_argument(
     "-e",
@@ -40,7 +41,7 @@ parser.add_argument(
     nargs=1,
     type=str,
     default=None,
-    help="Ending day date until which the total working hours are counted."
+    help="Ending day date in format %%Y-%%m-%%d until which the total working hours are counted."
 )
 parser.add_argument(
     "-d",
@@ -52,9 +53,6 @@ parser.add_argument(
 )
 
 args = parser.parse_args()
-
-print(args)
-
 annotators = args.users
 start_day = datetime.datetime.strptime(args.start[0], "%Y-%m-%d") if args.start else datetime.datetime.min
 end_day = datetime.datetime.strptime(args.end[0], "%Y-%m-%d") if args.end else datetime.datetime.max
