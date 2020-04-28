@@ -56,7 +56,8 @@ args = parser.parse_args()
 print(args)
 
 annotators = args.users
-start_day = datetime.datetime.strptime(args.start[0], "%Y-%m-%d") if args.start else None
+start_day = datetime.datetime.strptime(args.start[0], "%Y-%m-%d") if args.start else datetime.datetime.min
+end_day = datetime.datetime.strptime(args.end[0], "%Y-%m-%d") if args.end else datetime.datetime.max
 pause = args.pause[0]
 docker_name = args.docker
 
@@ -99,9 +100,5 @@ for user, user_entries in groupby(sorted(entries, key=keyfunc), key=keyfunc):
         work_end = blocks_in_day[-1][1].strftime("%H:%M:%S")
         print(f"Worked {datetime.timedelta(seconds=total_in_day)} on {date_str} ({work_start}-{work_end}).")
 
-    if start_day:
-        total_worked = sum(block[2].total_seconds() for block in time_blocks if block[0] > start_day)
-        print(f"Total time worked since {start_day.strftime('%Y-%m-%d')}: {datetime.timedelta(seconds=total_worked)}")
-    else:
-        total_worked = sum(block[2].total_seconds() for block in time_blocks)
-        print(f"Total time worked: {datetime.timedelta(seconds=total_worked)}")
+    total_worked = sum(block[2].total_seconds() for block in time_blocks if start_day < block[0] < end_day )
+    print(f"Total time worked from {start_day.strftime('%Y-%m-%d')} to {end_day.strftime('%Y-%m-%d')}: {datetime.timedelta(seconds=total_worked)}")
