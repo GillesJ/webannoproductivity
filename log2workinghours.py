@@ -21,7 +21,7 @@ parser.add_argument(
     "-p",
     "--pause",
     nargs=1,
-    default=5,
+    default=[5],
     type=int,
     help="""Pause time in minutes: time between annotations after this durat\
             ion will be counted as a pause in annotation and will not count tow\
@@ -48,16 +48,17 @@ parser.add_argument(
     "--docker",
     nargs=1,
     type=str,
-    default="webanno364",
+    default=["webanno364"],
     help="Name of the WebAnno docker image for which the logs are retrieved."
 )
 
 args = parser.parse_args()
+
 annotators = args.users
 start_day = datetime.datetime.strptime(args.start[0], "%Y-%m-%d") if args.start else datetime.datetime.min
 end_day = datetime.datetime.strptime(args.end[0], "%Y-%m-%d") if args.end else datetime.datetime.max
 pause = args.pause[0]
-docker_name = args.docker
+docker_name = args.docker[0]
 
 # get logs
 log_text = subprocess.check_output(["docker", "logs", docker_name]).decode("utf8")
@@ -69,10 +70,12 @@ entries = [match.groupdict() for match in entry_re.finditer(log_text)
 
 # group entries by annotator
 keyfunc = lambda d: d["user"]
+user_seen = set()
 for user, user_entries in groupby(sorted(entries, key=keyfunc), key=keyfunc):
+    user_seen.add(user)
     # collect hours worked
     user_dts = []
-    print(user)
+    print("-------\n", user)
     for x in user_entries:
         dt = datetime.datetime.strptime(x["dt"], "%Y-%m-%d %H:%M:%S")
         if dt not in user_dts:
@@ -100,3 +103,9 @@ for user, user_entries in groupby(sorted(entries, key=keyfunc), key=keyfunc):
 
     total_worked = sum(block[2].total_seconds() for block in time_blocks if start_day < block[0] < end_day )
     print(f"Total time worked from {start_day.strftime('%Y-%m-%d')} to {end_day.strftime('%Y-%m-%d')}: {datetime.timedelta(seconds=total_worked)}")
+    print("-------")
+
+    # warn about non-found users
+    for u in annotators:
+        if u not in user_seen:
+            print(f"WARNING: {u} was not found in the logs.")
