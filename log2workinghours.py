@@ -2,14 +2,66 @@ import re
 from itertools import groupby
 import datetime
 import subprocess
+import argparse
 
-annotators = ["haiyanhuang", "elinevandewalle", "jefdhondt", "gilles"]
-start_day = datetime.datetime(2020, 4, 29)
-start_day = None
-pause = 5 # 5 minutes
+parser = argparse.ArgumentParser(
+    prog="log2workinghours",
+    usage="Parses WebAnno log to working hours."
+)
+parser.add_argument(
+    "-u",
+    "--users",
+    nargs="+",
+    required=True,
+    help="""One or multiple name(s) of the WebAnno users whose working hours\
+             are retrieved."""
+)
+parser.add_argument(
+    "-p",
+    "--pause",
+    nargs=1,
+    default=5,
+    type=int,
+    help="""Pause time in minutes: time between annotations after this durat\
+            ion will be counted as a pause in annotation and will not count tow\
+            ards total hours worked."""
+)
+parser.add_argument(
+    "-s",
+    "--start",
+    nargs=1,
+    type=str,
+    default=None,
+    help="Starting day date from which the total working hours are counted."
+)
+parser.add_argument(
+    "-e",
+    "--end",
+    nargs=1,
+    type=str,
+    default=None,
+    help="Ending day date until which the total working hours are counted."
+)
+parser.add_argument(
+    "-d",
+    "--docker",
+    nargs=1,
+    type=str,
+    default="webanno364",
+    help="Name of the WebAnno docker image for which the logs are retrieved."
+)
+
+args = parser.parse_args()
+
+print(args)
+
+annotators = args.users
+start_day = datetime.datetime.strptime(args.start[0], "%Y-%m-%d") if args.start else None
+pause = args.pause[0]
+docker_name = args.docker
 
 # get logs
-log_text = subprocess.check_output(["docker", "logs", "webanno364"]).decode("utf8")
+log_text = subprocess.check_output(["docker", "logs", docker_name]).decode("utf8")
 
 # parse entries
 entry_re = re.compile("(?P<dt>\d{4}-\d\d-\d\d\s\d\d:\d\d:\d\d)\s(?P<type>\w+)\s\[(?P<user>\w+)\]\s(?P<dispatcher>\w+)\s-\s(?P<message>.*)", re.MULTILINE)
